@@ -1,0 +1,13 @@
+chain_genesis_hash: 08ed62d5f6293bb6e08e449f4b11e8caeb4c1748bc6663fbfb8d2ff4c860bd37
+rpc_address: 127.0.0.1:13120
+archive_center_http_url: http://127.0.0.1:13119
+request_second_limit: 10 
+tls_enable: false 
+tls: 
+  server_name: baec-archive
+  priv_key_file: ./archivecenter/archive-client.key
+  cert_file: ./archivecenter/archive-client.pem
+  trust_ca_list:
+    - ./archivecenter/baec-root.pem
+max_send_msg_size: 200
+max_recv_msg_size: 200 
