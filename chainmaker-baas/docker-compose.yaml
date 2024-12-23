@@ -1,0 +1,30 @@
+networks:
+  basic:
+    external: true
+
+services:
+  cm_mgmt_server:
+    image: chainmakerofficial/management-backend:v2.3.1
+    container_name: backend
+    ports:
+      - "9999:9999"
+    restart: always
+    volumes:
+      - ./compose/server/configs:/chainmaker-management/configs
+      - ./compose/server/logs:/chainmaker-management/log
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - basic
+  
+  cm_mgmt_web:
+    container_name: front
+    depends_on:
+      - cm_mgmt_server
+    image: chainmakerofficial/management-web:v2.3.1
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "80:80"
+    restart: always
+    networks:
+      - basic
