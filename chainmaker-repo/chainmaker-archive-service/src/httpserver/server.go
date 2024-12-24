@@ -69,6 +69,7 @@ func (srv *HttpSrv) Listen(apiCfg serverconf.HttpConfig) {
 }
 
 func (srv *HttpSrv) registerRouters() {
+	srv.router.Any("/health", srv.HealthCheck)
 	srv.router.POST("/get_archived_height", srv.GetArchivedHeight)
 	srv.router.POST("/get_range_blocks", srv.GetRangeBlocks)
 	srv.router.POST("/get_archive_status", srv.GetInArchiveAndArchivedHeight)

@@ -1109,3 +1109,10 @@ func (srv *HttpSrv) AddCA(ginContext *gin.Context) {
 		Data: "server add ca successful",
 	})
 }
+
+// HealthCheck 健康检查接口
+func (srv *HttpSrv) HealthCheck(ginContext *gin.Context) {
+	ginContext.SecureJSON(http.StatusOK, Response{
+		Data: "ok",
+	})
+}

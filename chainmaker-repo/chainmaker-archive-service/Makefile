@@ -3,3 +3,13 @@ ut:
 
 lint:
 	golangci-lint run ./...
+
+
+CUR_TIME:= $(shell date +"%Y%m%d%H%M")
+IMAGE_VERSION:=v$(CUR_TIME)
+IMAGE_NAME:=ubuntu/archivecenter/app-server:$(IMAGE_VERSION)
+
+build:
+	docker buildx build -t "$(IMAGE_NAME)" --no-cache  .
+	@echo "Image Name: $(IMAGE_NAME)"
+	@echo "done"
