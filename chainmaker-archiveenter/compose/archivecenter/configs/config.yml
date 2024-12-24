@@ -1,0 +1,134 @@
+# Logger settings
+log:
+  # Logger configuration file path.
+  log_path: ./log
+  log_level: info 
+  log_in_console: true
+  show_color: true
+  max_size: 200 # MB
+  max_backups: 3 
+  max_age: 3 # day 
+  compress: false
+# api server setting 
+
+http:
+  port: 13119  
+  ratelimit:
+    # Ratelimit switch. Default is false.
+    enabled: false
+
+    # Rate limit type
+    # 0: limit globally, 1: limit by ip
+    type: 0
+
+    # Token number added to bucket per second.
+    # -1: unlimited, by default is 10000.
+    token_per_second: -1
+
+    # Token bucket size.
+    # -1: unlimited, by default is 10000.
+    token_bucket_size: -1
+
+  white_list:
+    enabled: false 
+    address:
+      - 127.0.0.1      
+
+# RPC service setting
+rpc:
+  # RPC port
+  port: 13120 # grpc port    
+
+  # Rate limit related settings
+  # Here we use token bucket to limit rate.
+  ratelimit:
+    # Ratelimit switch. Default is false.
+    enabled: false
+
+    # Rate limit type
+    # 0: limit globally, 1: limit by ip
+    type: 0
+
+    # Token number added to bucket per second.
+    # -1: unlimited, by default is 10000.
+    token_per_second: -1
+
+    # Token bucket size.
+    # -1: unlimited, by default is 10000.
+    token_bucket_size: -1
+
+  white_list:
+    enabled: false 
+    address:
+      - 127.0.0.1  
+  tls_enable : false  # 只有ca证书的时候才设置为true，其余为false 
+  # RPC TLS settings
+  tls:
+    # RPC TLS private key file path
+    priv_key_file:  ./configs/server_cert/archive-server.key
+    # RPC TLS public key file path
+    cert_file:      ./configs/server_cert/archive-server.pem
+    trust_ca_list: 
+     # - ../configs/trust_list/archive-client.pem
+      - ./configs/trust_list/baec-client-root.pem
+     # - "configs/trust_list/ca1.ca"
+     # - "configs/trust_list/ca2.ca"
+
+  # RPC server max send/receive message size in MB
+  max_send_msg_size: 200
+  max_recv_msg_size: 200  
+
+
+# Monitor related settings
+monitor:
+  # Monitor service switch, default is false.
+  enabled: true
+
+  # Monitor service port
+  port: 13122
+
+# PProf Settings
+pprof:
+  # If pprof is enabled or not
+  enabled: true
+
+  # PProf port
+  port: 13123
+
+# Storage config settings
+storage_template:
+  # 存储系统信息
+  store_path: ./service_datas/system_info
+  # 存储链的block信息
+  bfdb_path: ./service_datas/block_data
+  # 存储链的索引信息
+  index_path: ./service_datas/index_data
+  # 存储链的压缩信息
+  compress_path: ./service_datas/compress_data
+  # 存储链的解压缩信息 
+  decompress_path: ./service_datas/decompress_data
+
+  # async write block in file block db to disk, default: false, so default is sync write disk
+  logdb_segment_async: false
+
+  # file size of .fdb, MB, default: 20
+  logdb_segment_size: 32
+
+  segment_cache_size: 3  
+
+  use_mmap: true  
+  # 扫描已经解压或已经压缩的文件列表的时间
+  scan_interval_seconds: 300
+  # 最大保留已解压或已压缩文件的时长   
+  retain_seconds: 3600
+  # compress_method: 7z # 7z or gzip
+  compress_seconds: 2000 # 单位为秒,压/解压缩超时时间
+  leveldb_config:
+    bloom_filter_bits: 10 
+
+  
+      
+      
+
+
+

@@ -1,0 +1,21 @@
+networks:
+  archive:
+    name: "cm_archive"
+
+services:
+  archivecenter:
+    restart: always
+    image: ubuntu/archivecenter/app-server:v202412241053
+    container_name: archivecenter
+    networks:
+      - archive
+    ports:
+      - "13119:13119"
+      - "13120:13120"
+      - "13122:13122"
+      - "13123:13123"
+    volumes:
+      - ./compose/archivecenter/log:/app/log
+      - ./compose/archivecenter/configs:/app/configs
+      - ./compose/archivecenter/service_datas:/app/service_datas
+    command: [ "-i","./configs/config.yml" ]
