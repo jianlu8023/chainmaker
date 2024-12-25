@@ -22,17 +22,17 @@ web:
 #  report_url: https://bugreport.chainmaker.org.cn/v1/reportLogs
 
 # 本机使用
-db:
-  host: 192.168.58.110
-  port: 3306
-  database: chainmaker_dev
-  user: root
-  passwd: 123456
-
-# 默认
 #db:
-#  host: cm_db
+#  host: 192.168.58.110
 #  port: 3306
 #  database: chainmaker_dev
-#  user: chainmaker
-#  passwd: aec&chainmaker
+#  user: root
+#  passwd: 123456
+
+# 默认
+db:
+  host: cm_db
+  port: 3306
+  database: chainmaker_dev
+  user: chainmaker
+  passwd: aec&chainmaker

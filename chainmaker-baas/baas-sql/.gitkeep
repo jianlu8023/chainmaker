@@ -1,0 +1,5 @@
+baas.sql 只有6个gm组织
+
+chainmaker-baas.sql 有6个gm组织 6个非国密组织
+每个组织节点两个 共识节点 和 同步节点
+每个组织用户三个 admin client light

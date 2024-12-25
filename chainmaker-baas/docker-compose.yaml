@@ -1,20 +1,50 @@
 networks:
-  basic:
-    external: true
-
+  #basic:
+    #external: true
+  baas:
+    name: "baas_net"
 services:
+  cm_db:
+    image: mysql:8.4.2
+    volumes:
+      - ./compose/mysql/data:/var/lib/mysql
+      - ./compose/mysql/source.d:/docker-entrypoint-initdb.d
+    restart: always
+    container_name: cm_db
+    #ports:
+      #- 3306:3306
+    networks:
+      - baas
+      #- basic
+    environment:
+      MYSQL_ROOT_PASSWORD: aec&chainmaker
+      MYSQL_USER: chainmaker
+      MYSQL_PASSWORD: aec&chainmaker
+      MYSQL_DATABASE: chainmaker_dev
+    command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci', '--max_allowed_packet=200M' ]
+    healthcheck:
+      interval: 60s
+      retries: 3
+      timeout: 5s
+      test: ["CMD","mysqladmin","ping","-h","localhost","-u","root","-paec&chainmaker"]
+
+
   cm_mgmt_server:
     image: chainmakerofficial/management-backend:v2.3.1
     container_name: backend
-    ports:
-      - "9999:9999"
+    #ports:
+      #- "9999:9999"
     restart: always
     volumes:
       - ./compose/server/configs:/chainmaker-management/configs
       - ./compose/server/logs:/chainmaker-management/log
       - /etc/localtime:/etc/localtime:ro
     networks:
-      - basic
+      #- basic
+      - baas
+    depends_on:
+      cm_db:
+        condition: service_healthy
   
   cm_mgmt_web:
     container_name: front
@@ -27,4 +57,5 @@ services:
       - "80:80"
     restart: always
     networks:
-      - basic
+      #- basic
+      - baas

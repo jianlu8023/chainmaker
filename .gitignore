@@ -5,4 +5,5 @@ testdata/
 
 fact.7z
 
-chainmaker-archiveenter/compose/archivecenter/service_datas/
+chainmaker-archivecenter/compose/archivecenter/data/
+chainmaker-baas/compose/mysql/data/
