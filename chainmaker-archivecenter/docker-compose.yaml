@@ -17,5 +17,5 @@ services:
     volumes:
       - ./compose/archivecenter/log:/app/log
       - ./compose/archivecenter/configs:/app/configs
-      - ./compose/archivecenter/service_datas:/app/service_datas
+      - ./compose/archivecenter/data:/app/service_datas
     command: [ "-i","./configs/config.yml" ]
