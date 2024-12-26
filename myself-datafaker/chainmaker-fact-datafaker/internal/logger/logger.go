@@ -8,7 +8,7 @@ import (
 var (
 	appLogger = glog.NewSugaredLogger(
 		&glog.Config{
-			LogLevel:    "info",
+			LogLevel:    "debug",
 			DevelopMode: true,
 			StackLevel:  "error",
 			ModuleName:  "[app]",

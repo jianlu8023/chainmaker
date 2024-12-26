@@ -28,8 +28,8 @@ func main() {
 	}
 	fmt.Println(sdks)
 
-	for range time.NewTicker(time.Second * 40).C {
-		count := rand.IntN(20)
+	for range time.NewTicker(time.Second * 30).C {
+		count := rand.IntN(30)
 
 		for i := 0; i < count; i++ {
 			random := rand.Int()
@@ -56,7 +56,6 @@ func main() {
 				}
 			}
 		}
-		fmt.Println("")
 		logger.GetAppLogger().Infof("save %v facts", count)
 	}
 }
