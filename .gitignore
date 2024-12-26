@@ -2,8 +2,3 @@
 logs/
 log/
 testdata/
-
-fact.7z
-
-chainmaker-archivecenter/compose/archivecenter/data/
-chainmaker-baas/compose/mysql/data/

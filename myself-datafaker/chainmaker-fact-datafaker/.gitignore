@@ -1,1 +1,4 @@
 leveldb-demo/
+log/
+
+configs/**/**

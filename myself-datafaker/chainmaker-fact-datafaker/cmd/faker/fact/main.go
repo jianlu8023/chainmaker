@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand/v2"
 	"os"
 	"path/filepath"
@@ -25,10 +26,10 @@ func main() {
 		logger.GetAppLogger().Errorf("get all chain client error %v", err)
 		return
 	}
+	fmt.Println(sdks)
 
-	ticker := time.NewTicker(time.Second * 10)
-	for range ticker.C {
-		count := rand.IntN(100)
+	for range time.NewTicker(time.Second * 40).C {
+		count := rand.IntN(20)
 
 		for i := 0; i < count; i++ {
 			random := rand.Int()
@@ -55,6 +56,8 @@ func main() {
 				}
 			}
 		}
+		fmt.Println("")
+		logger.GetAppLogger().Infof("save %v facts", count)
 	}
 }
 

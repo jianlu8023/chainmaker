@@ -7,9 +7,12 @@ services:
     image: mysql:8.4.2
     volumes:
       - ./compose/mysql/data:/var/lib/mysql
+      - ./compose/mysql/source.d:/docker-entrypoint-initdb.d
     restart: always
     networks:
       - explorer
+    #ports:
+      #- "13306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: Baec&chainmaker
       MYSQL_USER: chainmaker
@@ -24,19 +27,25 @@ services:
     container_name: cm_explorer_db
 
 
+
   cm_explorer_server:
     image: chainmakerofficial/explorer-backend:v2.3.1
     depends_on:
       cm_explorer_db:
         condition: service_healthy
-    ports:
-      - "9997:9997"
+    #ports:
+      #- "9997:9997"
     environment:
       show_config: 1
     restart: always
     container_name: explorer_server
     networks:
       - explorer
+    volumes:
+      - ./compose/server/configs:/chainmaker-explorer-backend/configs
+      - ./compose/server/logs:/chainmaker-explorer-backend/log
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
   cm_explorer_web:
     depends_on:
@@ -48,5 +57,7 @@ services:
     networks:
       - explorer
     container_name: explorer_web
-
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
