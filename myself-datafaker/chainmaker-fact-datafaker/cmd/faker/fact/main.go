@@ -1,56 +1,100 @@
 package main
 
 import (
-	"fmt"
+	"math/rand/v2"
+	"os"
+	"path/filepath"
+	"strconv"
 	"time"
 
+	"chainmaker-fact-datafaker/internal/database/entity"
+	"chainmaker-fact-datafaker/internal/database/mysql"
 	"chainmaker-fact-datafaker/internal/logger"
-	"chainmaker-fact-datafaker/internal/task"
+	"chainmaker-fact-datafaker/pkg/chainmaker/chaincode/invoke"
+	"chainmaker.org/chainmaker/common/v2/random/uuid"
+	chainmakercommon "chainmaker.org/chainmaker/pb-go/v2/common"
+	chainmakersdkgo "chainmaker.org/chainmaker/sdk-go/v2"
 )
 
 func main() {
-	fmt.Println("hello world")
 
-	// flag.String()
-	time.Sleep(5 * time.Second)
-	secondFunc := func() {
-		logger.GetAppLogger().Infof("hello world every secend")
-	}
+	mysql.InitConn()
 
-	addTask, err := task.AddTask(secondFunc, "0/1 * * * * * ")
+	sdks, err := initSdk()
 	if err != nil {
-		fmt.Println("add task error ", err)
-		task.Close()
+		logger.GetAppLogger().Errorf("get all chain client error %v", err)
 		return
 	}
 
-	fmt.Println("add task success ", addTask)
+	ticker := time.NewTicker(time.Second * 10)
+	for range ticker.C {
+		count := rand.IntN(100)
 
-	minuteId, err := task.AddTask(func() {
-		fmt.Println("hello world every    minute ")
-	}, "0 */1 * * * *")
+		for i := 0; i < count; i++ {
+			random := rand.Int()
+			sdk := sdks[random%len(sdks)]
+			fact := entity.FactEntity{
+				FileHash:  uuid.GetUUID(),
+				FileName:  uuid.GetUUID(),
+				TimeStamp: time.Now().UnixMilli(),
+			}
+			txResponse, err := invoke.CommonUpChain(sdk, "fact", "save",
+				"", []*chainmakercommon.KeyValuePair{
+					{Key: "file_hash", Value: []byte(fact.FileHash)},
+					{Key: "file_name", Value: []byte(fact.FileName)},
+					{Key: "time", Value: []byte(strconv.FormatInt(fact.TimeStamp, 10))},
+				},
+				-1, false)
+			if err != nil {
+				logger.GetAppLogger().Errorf("invoke chain error %v", err)
+				continue
+			} else {
+				fact.TxId = txResponse.GetTxId()
+				if err = fact.Save(); err != nil {
+					logger.GetAppLogger().Errorf("save fact error %v", err)
+				}
+			}
+		}
+	}
+}
+
+func initSdk() ([]*chainmakersdkgo.ChainClient, error) {
+
+	const (
+		defaultSdkConf = "sdk_configs/sdk_config.yml"
+		configDirName  = "./configs"
+	)
+
+	var (
+		confPaths = make(map[string]string)
+		sdkInfo   []*chainmakersdkgo.ChainClient
+		err       error
+	)
+	dirs, err := os.ReadDir(configDirName)
 	if err != nil {
-		fmt.Println("add task error ", err)
-		task.Close()
-		return
+		logger.GetAppLogger().Errorf("read config dir %v error %v", configDirName, err)
+		return nil, err
 	}
 
-	fmt.Println("add task success ", minuteId)
+	for _, dir := range dirs {
+		confPaths[dir.Name()] = filepath.Clean(filepath.Join(configDirName, dir.Name(), defaultSdkConf))
+	}
 
-	time.Sleep(2 * time.Minute)
+	for org, confPath := range confPaths {
+		chainClient, err := chainmakersdkgo.NewChainClient(
+			chainmakersdkgo.WithConfPath(confPath),
+			chainmakersdkgo.WithChainClientLogger(logger.GetSdkLogger()),
+		)
+		if err != nil {
+			logger.GetAppLogger().Errorf("new chain client for %v error %v", org, err)
+			return nil, err
+		}
 
-	fmt.Println("start remove task")
-
-	task.RemoveTask(addTask)
-
-	fmt.Println("remove task success")
-
-	time.Sleep(1 * time.Minute)
-
-	fmt.Println("close task")
-	time.Sleep(2 * time.Minute)
-	task.Close()
-
-	select {}
-
+		if err = chainClient.EnableCertHash(); err != nil {
+			logger.GetAppLogger().Errorf("enable cert hash for %v error %v", org, err)
+			return nil, err
+		}
+		sdkInfo = append(sdkInfo, chainClient)
+	}
+	return sdkInfo, nil
 }
