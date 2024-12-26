@@ -1,0 +1,52 @@
+networks:
+  explorer:
+    name: "cm_explorer"
+
+services:
+  cm_explorer_db:
+    image: mysql:8.4.2
+    volumes:
+      - ./compose/mysql/data:/var/lib/mysql
+    restart: always
+    networks:
+      - explorer
+    environment:
+      MYSQL_ROOT_PASSWORD: Baec&chainmaker
+      MYSQL_USER: chainmaker
+      MYSQL_PASSWORD: Baec&chainmaker
+      MYSQL_DATABASE: chainmaker_explorer_dev
+    command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+    healthcheck:
+      retries: 3
+      timeout: 5s
+      interval: 60s
+      test: ["CMD","mysqladmin","ping","-h","localhost","-u","root","-pBaec&chainmaker"]
+    container_name: cm_explorer_db
+
+
+  cm_explorer_server:
+    image: chainmakerofficial/explorer-backend:v2.3.1
+    depends_on:
+      cm_explorer_db:
+        condition: service_healthy
+    ports:
+      - "9997:9997"
+    environment:
+      show_config: 1
+    restart: always
+    container_name: explorer_server
+    networks:
+      - explorer
+
+  cm_explorer_web:
+    depends_on:
+      - cm_explorer_server
+    image: chainmakerofficial/explorer-web:v2.3.1
+    ports:
+      - "9996:8080"
+    restart: always
+    networks:
+      - explorer
+    container_name: explorer_web
+
+
