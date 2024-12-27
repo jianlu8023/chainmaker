@@ -85,7 +85,7 @@ func initSdk() ([]*chainmakersdkgo.ChainClient, error) {
 	for org, confPath := range confPaths {
 		chainClient, err := chainmakersdkgo.NewChainClient(
 			chainmakersdkgo.WithConfPath(confPath),
-			chainmakersdkgo.WithChainClientLogger(logger.GetSdkLogger()),
+			chainmakersdkgo.WithChainClientLogger(logger.GetAppLogger()),
 		)
 		if err != nil {
 			logger.GetAppLogger().Errorf("new chain client for %v error %v", org, err)

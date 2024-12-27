@@ -11,26 +11,16 @@ var (
 			LogLevel:    "debug",
 			DevelopMode: true,
 			StackLevel:  "error",
-			ModuleName:  "[app]",
 			Caller:      false,
-		})
-
-	sdkLogger = glog.NewSugaredLogger(
-		&glog.Config{
-			LogLevel:    "debug",
-			ModuleName:  "[sdk]",
-			Caller:      true,
-			DevelopMode: true,
-			StackLevel:  "error",
 		},
-		glog.WithConsoleFormat(),
 		glog.WithFileOutPut(),
+		glog.WithConsoleOutPut(),
 		glog.WithLumberjack(&glog.LumberjackConfig{
-			FileName:   "./log/chainmaker-sdk.log",
+			FileName:   "./log/chainmaker-app.log",
 			MaxSize:    2,
 			MaxAge:     30,
 			MaxBackups: 7,
-			Compress:   true,
+			Compress:   false,
 			Localtime:  true,
 		}),
 	)
@@ -38,8 +28,4 @@ var (
 
 func GetAppLogger() *zap.SugaredLogger {
 	return appLogger
-}
-
-func GetSdkLogger() *zap.SugaredLogger {
-	return sdkLogger
 }
