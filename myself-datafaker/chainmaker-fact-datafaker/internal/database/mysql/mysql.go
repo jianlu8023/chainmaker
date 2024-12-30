@@ -13,7 +13,8 @@ import (
 )
 
 func InitConn() {
-	// panic("当前使用配置有问题 请调整后注释panic")
+	panic("当前使用配置有问题 请调整后注释panic")
+
 	// mysqlDsn 数据库连接
 	const (
 		username = "root"
