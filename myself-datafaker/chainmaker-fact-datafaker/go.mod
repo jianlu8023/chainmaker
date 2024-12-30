@@ -2,7 +2,13 @@ module chainmaker-fact-datafaker
 
 go 1.22
 
-toolchain go1.22.10
+replace (
+	chainmaker.org/chainmaker/common/v2 => chainmaker.org/chainmaker/common/v2 v2.3.1
+	chainmaker.org/chainmaker/pb-go/v2 => chainmaker.org/chainmaker/pb-go/v2 v2.3.0
+	chainmaker.org/chainmaker/protocol/v2 v2.3.4 => chainmaker.org/chainmaker/protocol/v2 v2.3.0
+	chainmaker.org/chainmaker/sdk-go/v2 => chainmaker.org/chainmaker/sdk-go/v2 v2.3.1
+	chainmaker.org/chainmaker/utils/v2 v2.3.4 => chainmaker.org/chainmaker/utils/v2 v2.3.0
+)
 
 require (
 	chainmaker.org/chainmaker/common/v2 v2.3.3
@@ -35,7 +41,7 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
@@ -74,6 +80,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.9.0 // indirect
+	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/sykesm/zap-logfmt v0.0.4 // indirect
 	github.com/tidwall/gjson v1.10.2 // indirect
@@ -92,7 +99,7 @@ require (
 	golang.org/x/text v0.15.0 // indirect
 	google.golang.org/genproto v0.0.0-20210828152312-66f60bf46e71 // indirect
 	google.golang.org/grpc v1.40.0 // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/ini.v1 v1.63.2 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

@@ -13,12 +13,12 @@ import (
 )
 
 func InitConn() {
-	panic("当前使用配置有问题 请调整后注释panic")
+	// panic("当前使用配置有问题 请调整后注释panic")
 	// mysqlDsn 数据库连接
 	const (
 		username = "root"
 		password = "123456"
-		host     = "mysql"
+		host     = "172.25.138.54"
 		port     = "3306"
 		database = "chainmaker_archive_data"
 	)
