@@ -39,9 +39,7 @@ func InitConn() {
 			IgnoreRecordNotFoundError: true,
 			ParameterizedQueries:      true,
 			ShowSql:                   true,
-		},
-			dblogger.WithCustomLogger(logger.GetAppLogger().Desugar()),
-		),
+		}),
 	})
 	if err != nil {
 		panic(err)
