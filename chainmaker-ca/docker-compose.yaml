@@ -1,0 +1,25 @@
+networks:
+  cm_ca:
+    name: "chainmaker_net"
+    ipam:
+      config:
+        - subnet: 99.99.99.0/24
+          gateway: 99.99.99.254
+          ip_range: 99.99.99.0/24
+
+services:
+  ca:
+    container_name: chainmaker-ca
+    image: ubuntu/chainmaker-ca/app-server:v202412311221
+    volumes:
+      - ./compose/chainmaker-ca/configs:/chainmaker-ca/configs
+      - ./compose/chainmaker-ca/logs:/chainmaker-ca/log
+      - ./compose/chainmaker-ca/crypto-config:/chainmaker-ca/crypto-config
+    networks:
+      - cm_ca
+    restart: always
+    environment:
+      GIN_MODE: release
+    ports:
+      - "8090:8090"
+
