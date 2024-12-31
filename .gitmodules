@@ -7,3 +7,6 @@
 [submodule "sdk-go"]
 	path = sdk-go
 	url = https://git.chainmaker.org.cn/chainmaker/sdk-go.git
+[submodule "chainmaker-ca"]
+	path = chainmaker-ca
+	url = https://git.chainmaker.org.cn/chainmaker/chainmaker-ca.git
