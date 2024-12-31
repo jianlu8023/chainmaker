@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 
 	"after-archive-query/internal/logger"
@@ -67,7 +69,7 @@ func main() {
 	defer cc.Stop()
 
 	txResponse, err := cc.QueryContract("fact", "findByFileHash", []*chainmakercommon.KeyValuePair{
-		{Key: "file_hash", Value: []byte("b7e29aca8b0548d0b37c47422322c4bc")},
+		{Key: "file_hash", Value: []byte("eca2d5a815e94b00805739c0d80ccdb7")},
 	},
 		-1,
 	)
@@ -80,4 +82,23 @@ func main() {
 		return
 	}
 	log.Println("query contract result ", txResponse)
+
+	fmt.Println("11111111111111111111111111111111111111111")
+
+	txId, err := cc.GetTxByTxId("18158f4c62f05a3dca10c393ad7cc7b21d90fceab65b4edca2e4b5693d2912f4")
+	if err != nil {
+		log.Fatal("get tx by txId error ", err)
+		return
+	}
+	log.Println("get tx by txId result ", txId)
+	height := txId.BlockHeight
+	fmt.Println("height ", height)
+	transaction := txId.GetTransaction()
+	marshal, err := json.Marshal(transaction)
+	if err != nil {
+		log.Fatal("marshal transaction error ", err)
+		return
+	}
+	fmt.Println(string(marshal))
+
 }
