@@ -1,6 +1,6 @@
-chain_genesis_hash: 1b9f147d7b41205eda0b98645a63b75744902bb640e0543975fe8a64ec29f1e9
-rpc_address: 192.168.58.110:13120
-archive_center_http_url: http://192.168.58.110:13119
+chain_genesis_hash: a840c4e495975d90b4c5bb7d0b7641df8028163667132d0d0ab06b876987b433
+rpc_address: 172.25.138.51:13120
+archive_center_http_url: http://172.25.138.51:13119
 request_second_limit: 10 
 tls_enable: false 
 tls: 

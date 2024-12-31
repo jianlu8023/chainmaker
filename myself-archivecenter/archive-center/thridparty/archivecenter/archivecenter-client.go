@@ -97,8 +97,7 @@ func RegisterChainToArchiveCenter(chainClient *chainmakersdkgo.ChainClient,
 			ChainUnique: archiveCenterCFG.ChainGenesisHash,
 		})
 	if archiveStatusErr == nil && archivedStatus != nil && archivedStatus.Code == 0 {
-		fmt.Printf("chain %s archivestatus %+v \n",
-			archiveCenterCFG.ChainGenesisHash, *archivedStatus)
+		fmt.Printf("chain %s archivestatus %+v \n", archiveCenterCFG.ChainGenesisHash, *archivedStatus)
 		return archiveCenterCFG.ChainGenesisHash, nil
 	}
 	genesisBlock, genesisErr := chainClient.GetFullBlockByHeight(genesisBlockHeight)

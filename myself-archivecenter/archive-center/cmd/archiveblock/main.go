@@ -5,23 +5,16 @@ import (
 	"fmt"
 	"strings"
 
+	"archive-center/internal/logger"
 	"archive-center/thridparty/archivecenter"
 	util "archive-center/thridparty/utils"
-	commonlog "chainmaker.org/chainmaker/common/v2/log"
 	pbarchivecenter "chainmaker.org/chainmaker/pb-go/v2/archivecenter"
 	"github.com/gosuri/uiprogress"
-	"github.com/spf13/pflag"
 )
 
 const (
-	flagSdkConfPath        = "sdk-conf-path"
-	flagArchiveConfPath    = "archive-conf-path"
-	flagArchiveBeginHeight = "archive-begin-height"
-	flagArchiveEndHeight   = "archive-end-height"
-	flagChainId            = "chain-id"
-	flagArchiveMode        = "mode"
-	archiveModeQuick       = "quick"
-	archivedModeNormal     = "normal"
+	archiveModeQuick   = "quick"
+	archivedModeNormal = "normal"
 )
 
 var (
@@ -31,38 +24,28 @@ var (
 	archiveBeginHeight    uint64 // 开始归档区块
 	archiveEndHeight      uint64 // 结束归档区块
 	archiveMode           string // 是否使用快速归档(是的话为quick默认为否)
-	flags                 *pflag.FlagSet
 )
 
 func main() {
 
 	// 检查归档开始高度和归档结束高度
 	archiveBeginHeight = 1
-	archiveEndHeight = 100
+	archiveEndHeight = 75000
 	if archiveBeginHeight >= archiveEndHeight {
 		fmt.Println(">>> 归档开始 > 归档结束")
 		return
 	}
 
-	sdkConfPath = "./configs/sdk_configs/sdk_config.yml"
+	sdkConfPath = "./configs/sdk_configs/gmorg1/sdk_configs/sdk_config.yml"
 
-	config := commonlog.LogConfig{
-		Module:       "[SDK]",
-		LogPath:      "./log/sdk.log",
-		LogLevel:     commonlog.LEVEL_DEBUG,
-		MaxAge:       30,
-		JsonFormat:   false,
-		ShowLine:     true,
-		LogInConsole: false,
-		// LogInConsole: true,
-	}
+	chainId = "archive"
 
-	log, _ := commonlog.InitSugarLogger(&config)
-	// chainId 链名称 默认 "" 此处应该也是 链名称 在命令行中传了参数 --chain-id
-	cc, err := util.CreateChainClient(sdkConfPath, "archivetest",
+	// chainId 链名称 默认 "" 此处应该是 链名称 在命令行中传了参数 --chain-id
+	cc, err := util.CreateChainClient(sdkConfPath, chainId,
 		"", "",
 		"", "", "",
-		log)
+		logger.GenChainMakerLogger(false),
+	)
 
 	if err != nil {
 		fmt.Println("获取client 失败 ", err)
@@ -79,6 +62,7 @@ func main() {
 		return
 	}
 	defer archiveClient.Stop()
+
 	// 1. register genesis block
 	genesisHash, registerErr := archivecenter.RegisterChainToArchiveCenter(cc, archiveClient)
 	if registerErr != nil {

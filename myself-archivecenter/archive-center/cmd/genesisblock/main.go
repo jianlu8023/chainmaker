@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"archive-center/internal/logger"
 	util "archive-center/thridparty/utils"
-	commonlog "chainmaker.org/chainmaker/common/v2/log"
 	sdk "chainmaker.org/chainmaker/sdk-go/v2"
 	"github.com/bytedance/sonic"
 	"github.com/tidwall/gjson"
@@ -37,25 +37,12 @@ func main() {
 	// sdkConfPath 路经 后续可从baas直接获取信息构建cc
 	// 目前采用配置文件方式
 	// wd, _ := os.Getwd()
-	sdkConfPath := "./configs/sdk_configs/sdk_config.yml"
-
-	config := commonlog.LogConfig{
-		Module:       "[SDK]",
-		LogPath:      "./log/sdk.log",
-		LogLevel:     commonlog.LEVEL_DEBUG,
-		MaxAge:       30,
-		JsonFormat:   false,
-		ShowLine:     true,
-		LogInConsole: false,
-		// LogInConsole: true,
-	}
-
-	log, _ := commonlog.InitSugarLogger(&config)
+	sdkConfPath := "./configs/sdk_configs/gmorg1/sdk_configs/sdk_config.yml"
 
 	cc, err := sdk.NewChainClient(
 		sdk.WithConfPath(sdkConfPath),
 		sdk.WithChainClientChainId(""),
-		sdk.WithChainClientLogger(log),
+		sdk.WithChainClientLogger(logger.GenChainMakerLogger(false)),
 	)
 	if err != nil {
 		fmt.Println("获取client 失败 ", err)
