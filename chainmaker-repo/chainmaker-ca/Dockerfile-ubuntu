@@ -1,0 +1,52 @@
+FROM golang:1.16.2 AS gobuilder
+
+
+ENV GO111MODULE=on
+ENV GOPROXY=https://goproxy.cn,https://goproxy.io,direct
+ENV GOSUMDB=sum.golang.google.cn
+ENV GOPRIVATE=chainmaker.org/*
+ENV GONOSUMDB=chainmaker.org/*
+ENV GOINSECURE=chainmaker.org/*
+
+ENV GIT_TERMINAL_PROMPT=1
+
+WORKDIR /build
+
+COPY go.mod go.sum ./
+
+RUN go mod download -x
+
+COPY . .
+
+RUN cd /build && go build -ldflags="-s -w" -o chainmaker-ca ./src/
+
+FROM ubuntu:22.04 AS datebuilder
+
+RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list && \
+     sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list && \
+      apt update && \
+      apt install tzdata -y && \
+      echo "Asia/Shanghai" > /etc/timezone
+RUN echo "done"
+
+FROM ubuntu:22.04 AS runner
+
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+RUN mkdir -p /usr/local/lib64/pkcs11
+ENV LD_LIBRARY_PATH=/usr/local/lib64/pkcs11
+
+WORKDIR /chainmaker-ca
+
+COPY --from=datebuilder /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+COPY --from=datebuilder /etc/timezone /etc/timezone
+
+COPY --from=gobuilder /build/chainmaker-ca ./
+COPY --from=gobuilder /build/src/conf ./configs
+
+VOLUME [ "/chainmaker-ca/log" ,"/chainamker-ca/crypto-config" ,"/chainmaker-ca/configs"]
+EXPOSE 7500
+
+ENTRYPOINT ["./chainmaker-ca"]
+
+CMD ["-config", "./configs/config.yaml"]

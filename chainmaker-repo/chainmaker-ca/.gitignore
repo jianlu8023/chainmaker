@@ -1,0 +1,14 @@
+crypto-config/
+log/
+.idea/
+conf/
+!src/conf/
+!deploy/chainmaker-ca/conf
+.vscode
+default.log*
+OBJSP02
+swsds.log
+upkcs11.log*
+sansec-pkcs11/etc/hostname
+sansec-pkcs11/etc/hosts
+sansec-pkcs11/etc/resolv.conf
