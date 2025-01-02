@@ -26,19 +26,18 @@ services:
       test: ["CMD","mysqladmin","ping","-h","localhost","-u","root","-pBaec&chainmaker"]
     container_name: cm_explorer_db
 
-
-
   cm_explorer_server:
     image: chainmakerofficial/explorer-backend:v2.3.1
     depends_on:
       cm_explorer_db:
         condition: service_healthy
-    #ports:
-      #- "9997:9997"
+    ports:
+      - "9997:9997"
     environment:
-      show_config: 1
+      show_config: 0
     restart: always
-    container_name: explorer_server
+    container_name: cm_explorer_server
+    hostname: cm_explorer_server
     networks:
       - explorer
     volumes:
@@ -50,14 +49,27 @@ services:
   cm_explorer_web:
     depends_on:
       - cm_explorer_server
-    image: chainmakerofficial/explorer-web:v2.3.1
+      - cm_explorer_web_evm
+    image: chainmakerofficial/explorer-web:v2.3.1_evm
     ports:
       - "9996:8080"
     restart: always
     networks:
       - explorer
-    container_name: explorer_web
+    container_name: cm_explorer_web
+    hostname: cm_explorer_web
+    command: /bin/sh -c "sleep 10 && nginx -g 'daemon off;'"  # 延迟 10 秒启动
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+  
+  cm_explorer_web_evm:
+    container_name: cm_explorer_web_evm
+    hostname: cm_explorer_web_evm
+    networks:
+      - explorer
+    image: chainmakerofficial/explorer-web:v2.3.1_extend
+    ports:
+      - "9995:9996"
+    restart: always
 
